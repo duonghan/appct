@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "392948065174",
+    "firebase_url": "https://appct-21bdb.firebaseio.com",
+    "project_id": "appct-21bdb",
+    "storage_bucket": "appct-21bdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392948065174:android:2668accb46721fe11073b7",
+        "android_client_info": {
+          "package_name": "com.appct"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "392948065174-rm6cq2ihjgokea11h28q4d6c2aa7j8rf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBP8EIwTz8FjxeBBwtHvQLFXrP24_Ti0rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392948065174-rm6cq2ihjgokea11h28q4d6c2aa7j8rf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
