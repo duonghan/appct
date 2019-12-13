@@ -1,18 +1,68 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, View, Button} from 'react-native';
+import firebase from 'react-native-firebase';
 export default class Login extends React.Component {
-  state = {email: '', password: '', errorMessage: null};
+  constructor(props) {
+    super(props);
+
+    this.unsubscriber = null;
+
+    this.state = {
+      isAuthenticate: false,
+      email: '',
+      password: '',
+      user: null,
+      errorMessage: '',
+    };
+  }
+
+  componentDidMount() {
+    this.unsubscriber = firebase.auth().onAuthStateChanged(changedUser => {
+      this.setState({user: changedUser});
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscriber) {
+      this.unsubscriber();
+    }
+  }
+
   handleLogin = () => {
-    // TODO: Firebase stuff...
-    console.log('handleLogin');
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then(logedUser => {
+        this.setState({user: logedUser});
+        console.log(`Login with user: ${JSON.stringify(logedUser)}`);
+      })
+      .catch(err => {
+        console.log(`Login failed with error: ${err}`);
+      });
   };
+
+  handleRegister = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(user => {
+        this.setState({user});
+        console.log(`Registered with user: ${JSON.stringify(user)}`);
+      })
+      .catch(err => {
+        console.log(`Register failed with error: ${err}`);
+      });
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <Text>Login</Text>
-        {this.state.errorMessage && (
-          <Text style={{color: 'red'}}>{this.state.errorMessage}</Text>
-        )}
+
+        <Text style={{color: 'red'}}>
+          {this.state.errorMessage && this.state.errorMessage}
+        </Text>
+
         <TextInput
           style={styles.textInput}
           autoCapitalize="none"
@@ -29,10 +79,7 @@ export default class Login extends React.Component {
           value={this.state.password}
         />
         <Button title="Login" onPress={this.handleLogin} />
-        <Button
-          title="Don't have an account? Sign Up"
-          onPress={() => this.props.navigation.navigate('SignUp')}
-        />
+        <Button title="Register" onPress={this.handleRegister} />
       </View>
     );
   }
