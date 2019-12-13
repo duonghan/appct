@@ -2,6 +2,10 @@ import React from 'react';
 import {StyleSheet, Text, TextInput, View, Button} from 'react-native';
 import firebase from 'react-native-firebase';
 import {AccessToken, LoginManager, LoginButton} from 'react-native-fbsdk';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-community/google-signin';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -22,6 +26,8 @@ export default class Login extends React.Component {
     this.unsubscriber = firebase.auth().onAuthStateChanged(changedUser => {
       this.setState({user: changedUser});
     });
+
+    GoogleSignin.configure();
   }
 
   componentWillUnmount() {
@@ -68,6 +74,24 @@ export default class Login extends React.Component {
       });
   };
 
+  handleLoginWithGoogle = () => {
+    GoogleSignin.signIn()
+      .then(data => {
+        const credential = firebase.auth.GoogleAuthProvider.credential(
+          data.idToken,
+          data.accessToken,
+        );
+
+        return firebase.auth().signInWithCredential(credential);
+      })
+      .then(currentUser => {
+        console.log(`Google Login with user: ${JSON.stringify(currentUser)}`);
+      })
+      .catch(err => {
+        console.log(`Login failed with error: ${err}`);
+      });
+  };
+
   handleRegister = () => {
     firebase
       .auth()
@@ -108,6 +132,13 @@ export default class Login extends React.Component {
         <Button title="Login" onPress={this.handleLogin} />
         <Button title="Register" onPress={this.handleRegister} />
         <LoginButton />
+        <GoogleSigninButton
+          style={{width: 192, height: 48}}
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={this.handleLoginWithGoogle}
+          disabled={this.state.isSigninInProgress}
+        />
       </View>
     );
   }
