@@ -38,6 +38,8 @@ target 'appct' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+
   target 'appctTests' do
     inherit! :search_paths
     # Pods for testing

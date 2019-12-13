@@ -1,6 +1,8 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, View, Button} from 'react-native';
 import firebase from 'react-native-firebase';
+import {AccessToken, LoginManager, LoginButton} from 'react-native-fbsdk';
+
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -35,6 +37,31 @@ export default class Login extends React.Component {
       .then(logedUser => {
         this.setState({user: logedUser});
         console.log(`Login with user: ${JSON.stringify(logedUser)}`);
+      })
+      .catch(err => {
+        console.log(`Login failed with error: ${err}`);
+      });
+  };
+
+  handleLoginWithFacebook = () => {
+    LoginManager.logInWithPermissions(['pulic_profile', 'email'])
+      .then(result => {
+        console.log(
+          `Login success with permission: ${result.grantedPermissions.toString()}`,
+        );
+
+        // get the access token
+        return AccessToken.getCurrentAccessToken();
+      })
+      .then(data => {
+        const credential = firebase.auth.FacebookAuthProvider.credential(
+          data.accessToken,
+        );
+
+        return firebase.auth().signInWithCredential(credential);
+      })
+      .then(currentUser => {
+        console.log(`Facebook login with user: ${JSON.stringify(currentUser)}`);
       })
       .catch(err => {
         console.log(`Login failed with error: ${err}`);
@@ -80,6 +107,7 @@ export default class Login extends React.Component {
         />
         <Button title="Login" onPress={this.handleLogin} />
         <Button title="Register" onPress={this.handleRegister} />
+        <LoginButton />
       </View>
     );
   }
